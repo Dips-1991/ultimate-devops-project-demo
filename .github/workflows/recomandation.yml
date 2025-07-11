@@ -6,7 +6,7 @@ on:
         - main
 jobs:
     build:
-        runs-on: buuntu-latest
+        runs-on: ubuntu-latest
         steps:
             - name: checkout code
               uses: actions/checkout@v4
@@ -22,7 +22,7 @@ jobs:
                 pip install -r src/recommendation/requirements.txt
 
     docker: 
-        runs-on: ubuntu-docker
+        runs-on: ubuntu-latest
         steps:
             - name: checkout code
               uses: actions/checkout@v4
@@ -56,13 +56,13 @@ jobs:
 
             - name: update image tag in recommendation k8s deployment
               run: |
-                sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME}}/recommendation: ${{ github.run_id }}|" kubernetes/recommendation/deploy.yaml
+                sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME}}/recommendation:${{ github.run_id }}|" kubernetes/recommendation/deploy.yaml
             
             - name: commit changes
               run: |
                 git config --global user.email "deepak@gmail.com"
                 git config --global user.name "Deepak patil"
-                git add kubernetes/recommandation/deploy.yaml
+                git add kubernetes/recommendation/deploy.yaml
                 git commit -m "[CI]: Update recommendation image tag"
                 git push origin HEAD:main -f
 
